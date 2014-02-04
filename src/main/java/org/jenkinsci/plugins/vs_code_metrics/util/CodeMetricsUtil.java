@@ -125,25 +125,29 @@ public abstract class  CodeMetricsUtil {
         total.setName(Messages.Summart_AllClasses());
 
         if (total.getChildren().size() > 0) {
-            int sumMaintainabilityIndex = 0;
-            int sumCyclomaticComplexity = 0;
-            int sumClassCoupling        = 0;
-            int sumDepthOfInheritance   = 0;
-            int sumtLinesOfCode         = 0;
+            int minMaintainabilityIndex = 100;
+            int maxCyclomaticComplexity = 0;
+            int maxClassCoupling        = 0;
+            int maxDepthOfInheritance   = 0;
+            int sumLinesOfCode          = 0;
 
             for (Module module : total.getChildren().values()) {
-                sumMaintainabilityIndex += module.getMaintainabilityIndex();
-                sumCyclomaticComplexity += module.getCyclomaticComplexity();
-                sumClassCoupling        += module.getClassCoupling();
-                sumDepthOfInheritance   += module.getDepthOfInheritance();
-                sumtLinesOfCode         += module.getLinesOfCode();
+                minMaintainabilityIndex = minMaintainabilityIndex <= module.getMaintainabilityIndex() ? minMaintainabilityIndex
+                                                                                                      : module.getMaintainabilityIndex();
+                maxCyclomaticComplexity = maxCyclomaticComplexity >= module.getCyclomaticComplexity() ? maxCyclomaticComplexity
+                                                                                                      : module.getCyclomaticComplexity();
+                maxClassCoupling        = maxClassCoupling        >= module.getClassCoupling()        ? maxClassCoupling
+                                                                                                      : module.getClassCoupling();
+                maxDepthOfInheritance   = maxDepthOfInheritance   >= module.getDepthOfInheritance()   ? maxDepthOfInheritance
+                                                                                                      : module.getDepthOfInheritance();
+                sumLinesOfCode         += module.getLinesOfCode();
             }
 
-            total.setMaintainabilityIndex(sumMaintainabilityIndex / total.getChildren().size());
-            total.setCyclomaticComplexity(sumCyclomaticComplexity);
-            total.setClassCoupling(sumClassCoupling);
-            total.setDepthOfInheritance(sumDepthOfInheritance);
-            total.setLinesOfCode(sumtLinesOfCode);
+            total.setMaintainabilityIndex(minMaintainabilityIndex);
+            total.setCyclomaticComplexity(maxCyclomaticComplexity);
+            total.setClassCoupling(maxClassCoupling);
+            total.setDepthOfInheritance(maxDepthOfInheritance);
+            total.setLinesOfCode(sumLinesOfCode);
         }
 
         return total;
